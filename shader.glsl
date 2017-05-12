@@ -219,7 +219,8 @@ void main(void)
 	//vec3 color = (ao(pos, n, 0.04) * 0.5 + 0.5);// * (normal(pos) * 0.5 + 0.5);
 	vec3 sphereLight = vec3(1.0, 0.1, 0.0) * light(pos, n, spheres(pos), 0.2, 2.0);
 	vec3 cubeLight = vec3(0.0, 0.7, 1.0) * light(pos, n, cubes2(pos), 0.1, 4.0) * exp(-fract(_u[0] * 0.5) * 4.0);
-	vec3 radiance = sphereLight + cubeLight + occ * 0.01;
+	vec3 holeLight = vec3(1.0, 0.02, 0.0) * light(pos, n, pos.y + 2.0 + holeAmount * 2.0, 0.3, 10.0) * holeAmount;
+	vec3 radiance = sphereLight + cubeLight + holeLight + occ * 0.01;
 	vec3 color = tonemap(radiance);
 	gl_FragColor = vec4(color, 1.0);
 }
