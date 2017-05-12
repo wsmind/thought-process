@@ -105,7 +105,7 @@ float spheres(vec3 p)
 float holes(vec3 p)
 {
 	p.yz = repeat2(p.yz, vec2(0.4, 1.0));
-	return box(p, vec3(4.0, 0.1, 1.0));
+	return box(p, vec3(4.0, 0.04, 1.0));
 }
 
 float corridor(vec3 p)
