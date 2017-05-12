@@ -28,7 +28,17 @@ float rand2(vec2 co)
 	return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453);
 }
 
-vec3 repeat(vec3 p, vec3 period)
+float repeat(float p, float period)
+{
+	return mod(p + period * 0.5, period) - period * 0.5;
+}
+
+vec2 repeat2(vec2 p, vec2 period)
+{
+	return mod(p + period * 0.5, period) - period * 0.5;
+}
+
+vec3 repeat3(vec3 p, vec3 period)
 {
 	return mod(p + period * 0.5, period) - period * 0.5;
 }
@@ -43,9 +53,9 @@ vec3 randColor(vec3 p)
 	);
 }
 
-float box(vec3 p)
+float box(vec3 p, vec3 s)
 {
-	vec3 diff = abs(p) - vec3(1.0);
+	vec3 diff = abs(p) - s;
 	return length(max(diff, 0.0)) + vmax(min(diff, 0.0));
 }
 
@@ -63,23 +73,23 @@ float reverseTube(vec3 p)
 float cubes(vec3 p)
 {
 	p.xy += vec2(2.0);
-	p = repeat(p, vec3(4.0));
-	return box(p);
+	p = repeat3(p, vec3(4.0));
+	return box(p, vec3(1.0));
 }
 
 float cubes2(vec3 p)
 {
 	p.xy += vec2(2.0);
 	p.z += floor(_u[0] / 2.0) * 4.0;
-	p = repeat(p, vec3(4.0, 4.0, 16.0));
-	return box(p);
+	p = repeat3(p, vec3(4.0, 4.0, 16.0));
+	return box(p, vec3(1.0));
 }
 
 /*float spheres(vec3 p)
 {
 	p.xy = rotate(p.xy, _u[0] * 0.2);
 	p.xy += 1.0 + sin(p.z * 0.1);
-	p = repeat(p, vec3(2.0, 2.0, 10.0));
+	p = repeat3(p, vec3(2.0, 2.0, 10.0));
 	return length(p) - 0.2;
 }*/
 
@@ -88,8 +98,14 @@ float spheres(vec3 p)
 	float ringSize = 1.4 * (sin(_u[0] * 0.1) * 0.4 + 0.6);
 	p.xy = rotate(p.xy, _u[0] * 0.2 + p.z * 0.2);
 	p.xy += ringSize;
-	p = repeat(p, vec3(ringSize * 2.0, ringSize * 2.0, 10.0));
+	p = repeat3(p, vec3(ringSize * 2.0, ringSize * 2.0, 10.0));
 	return length(p) - 0.2;
+}
+
+float holes(vec3 p)
+{
+	p.yz = repeat2(p.yz, vec2(0.4, 1.0));
+	return box(p, vec3(4.0, 0.1, 1.0));
 }
 
 float corridor(vec3 p)
@@ -98,8 +114,9 @@ float corridor(vec3 p)
 	float wall = min(e.x, e.y);
 	
 	float c = cubes(p);
+	float h = holes(p);
 	
-	return min(wall, c);
+	return max(min(wall, c), -h);
 	//return max(wall, -c);
 }
 
