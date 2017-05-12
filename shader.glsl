@@ -85,7 +85,7 @@ float cubes2(vec3 p)
 
 float spheres(vec3 p)
 {
-	float ringSize = 1.4;
+	float ringSize = 1.4 * (sin(_u[0] * 0.1) * 0.4 + 0.6);
 	p.xy = rotate(p.xy, _u[0] * 0.2 + p.z * 0.2);
 	p.xy += ringSize;
 	p = repeat(p, vec3(ringSize * 2.0, ringSize * 2.0, 10.0));
