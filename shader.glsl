@@ -4,6 +4,7 @@ uniform float _u[UNIFORM_COUNT];
 vec2 resolution = vec2(WIDTH, HEIGHT);
 
 float holeAmount;
+float crazy = 0.0;
 
 vec2 rotate(vec2 uv, float a)
 {
@@ -107,7 +108,7 @@ float spheres(vec3 p)
 float holes(vec3 p)
 {
 	p.yz = repeat2(p.yz, vec2(0.4, 1.0));
-	return box(p, vec3(4.0, holeAmount * 0.1, 1.0));
+	return box(p, vec3(4.0, holeAmount * 0.1 + 0.4 * crazy, 1.0));
 }
 
 float holes2(vec3 p)
@@ -196,9 +197,10 @@ void main(void)
 {
 	// will be switched to uniform
 	holeAmount = sin(_u[0] * 0.1) * 0.5 + 0.5;
+	//crazy = sin(_u[0] * 0.2) * 0.5 + 0.5;
 	
 	vec2 uv = vec2(gl_FragCoord.xy - resolution.xy * 0.5) / resolution.y;
-	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1);
+	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1 + crazy * _u[0] * 0.2);
 	
 	vec3 dir = normalize(vec3(uv, 0.5 - length(uv) * 0.4));
 
