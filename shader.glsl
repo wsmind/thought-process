@@ -108,13 +108,19 @@ float holes(vec3 p)
 	return box(p, vec3(4.0, sin(_u[0] * 0.1) * 0.1 + 0.1, 1.0));
 }
 
+float holes2(vec3 p)
+{
+	p.z = repeat2(p.z, 4.0);
+	return box(p, vec3(1.0, 8.0, 1.0));
+}
+
 float corridor(vec3 p)
 {
 	vec2 e = vec2(2.0) - abs(p.xy);
 	float wall = min(e.x, e.y);
 	
 	float c = cubes(p);
-	float h = holes(p);
+	float h = min(holes(p), holes2(p));
 	
 	return max(min(wall, c), -h);
 	//return max(wall, -c);
