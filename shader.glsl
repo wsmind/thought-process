@@ -3,6 +3,8 @@
 uniform float _u[UNIFORM_COUNT];
 vec2 resolution = vec2(WIDTH, HEIGHT);
 
+float holeAmount;
+
 vec2 rotate(vec2 uv, float a)
 {
 	return mat2(cos(a), sin(a), -sin(a), cos(a)) * uv;
@@ -105,13 +107,13 @@ float spheres(vec3 p)
 float holes(vec3 p)
 {
 	p.yz = repeat2(p.yz, vec2(0.4, 1.0));
-	return box(p, vec3(4.0, sin(_u[0] * 0.1) * 0.1 + 0.1, 1.0));
+	return box(p, vec3(4.0, holeAmount * 0.1, 1.0));
 }
 
 float holes2(vec3 p)
 {
 	p.z = repeat2(p.z, 4.0);
-	return box(p, vec3(1.0, 8.0, 1.0));
+	return box(p, vec3(1.0, holeAmount * 2.0 + 2.0, 1.0));
 }
 
 float corridor(vec3 p)
@@ -192,6 +194,9 @@ float light(vec3 p, vec3 n, float d, float range, float energy)
 
 void main(void)
 {
+	// will be switched to uniform
+	holeAmount = sin(_u[0] * 0.1) * 0.5 + 0.5;
+	
 	vec2 uv = vec2(gl_FragCoord.xy - resolution.xy * 0.5) / resolution.y;
 	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1);
 	
