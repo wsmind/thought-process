@@ -4,7 +4,7 @@ uniform float _u[UNIFORM_COUNT];
 vec2 resolution = vec2(WIDTH, HEIGHT);
 
 float holeAmount;
-float crazy = 0.5;
+float crazy = 0.0;
 
 vec2 rotate(vec2 uv, float a)
 {
