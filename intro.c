@@ -80,7 +80,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define TRACKER_PERIOD 4725 // 140 bpm (44100 * 60 / 140 / 4)
 #define TRACKER_PATTERN_LENGTH 16 // 16 periods (16th) per pattern
-#define TRACKER_SONG_LENGTH 8 // in patterns
+#define TRACKER_SONG_LENGTH 12 // in patterns
 #define AUDIO_SAMPLES (TRACKER_PERIOD * TRACKER_PATTERN_LENGTH * TRACKER_SONG_LENGTH * 2)
 
 static const unsigned int riffHeader[11] = {
@@ -150,7 +150,7 @@ short saw(unsigned int frame, unsigned int period)
 	     ;//+ (frame % (period + 1)) * 65535 / period / SAW_VOLUME_DIVIDER - 32767 / SAW_VOLUME_DIVIDER;
 }
 
-#define SAW2_VOLUME_DIVIDER 6
+#define SAW2_VOLUME_DIVIDER 8
 short saw2(unsigned int frame, unsigned int period)
 {
     int adsr = (frame < 4096) ? 65535 - (frame << 4) : 0;
