@@ -99,7 +99,7 @@ float cubes2(vec3 p)
 
 float spheres(vec3 p)
 {
-	float ringSize = 1.4 * (sin(_u[0] * 0.1) * 0.4 + 0.6) + 50.0 * (1.0 - step(68.0, _u[0]));
+	float ringSize = 1.4 * (sin(_u[0] * 0.1) * 0.4 + 0.6) + 50.0 * _u[2];
 	p.xy = rotate(p.xy, _u[0] * 0.2 + floor(p.z / 10.0 + 0.2));
 	p.xy += ringSize;
 	p = repeat3(p, vec3(ringSize * 2.0, ringSize * 2.0, 10.0));
@@ -196,14 +196,14 @@ float light(vec3 p, vec3 n, float d, float range, float energy)
 
 void main(void)
 {
-	saturation = step(36.0, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
-	holeAmount = smoothstep(132.0, 164.0, _u[0]); //sin(_u[0] * 0.1) * 0.5 + 0.5;
+	saturation = step(36.0, _u[0]) * step(0.0, 260.0 - _u[0]) + step(292, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
+	holeAmount = smoothstep(132.0, 164.0, _u[0]) * step(0.0, 260.0 - _u[0]); //sin(_u[0] * 0.1) * 0.5 + 0.5;
 	crazy = smoothstep(194.0, 196.0, _u[0]); //sin(_u[0] * 0.2) * 0.5 + 0.5;
 	
 	float shake = -exp(-mod(_u[0] - 4.0, 32.0) * 4.0) * rand(_u[0]);
 	
 	vec2 uv = vec2(gl_FragCoord.xy - resolution.xy * 0.5) / resolution.y;
-	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1 + (crazy * fract(_u[0] * 0.04) + shake) * 6.28);
+	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1 + (crazy * fract(_u[0] * 0.01) + shake) * 6.28);
 	
 	vec3 dir = normalize(vec3(uv, 0.5 - length(uv) * 0.4));
 	vec3 pos = vec3(shake, -shake, _u[0]);

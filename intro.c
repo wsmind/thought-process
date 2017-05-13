@@ -74,13 +74,13 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define WIDTH 1920
 #define HEIGHT 1080
-#define UNIFORM_COUNT 2
+#define UNIFORM_COUNT 3
 
 #include "shader.h"
 
 #define TRACKER_PERIOD 4725 // 140 bpm (44100 * 60 / 140 / 4)
 #define TRACKER_PATTERN_LENGTH 16 // 16 periods (16th) per pattern
-#define TRACKER_SONG_LENGTH 65 // in patterns
+#define TRACKER_SONG_LENGTH 81 // in patterns
 #define AUDIO_SAMPLES (TRACKER_PERIOD * TRACKER_PATTERN_LENGTH * TRACKER_SONG_LENGTH * 2)
 
 static const unsigned int riffHeader[11] = {
@@ -840,7 +840,27 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 1, 23, 7, 18, 2, 0, 0, 0 },
     { 4, 24, 7, 18, 2, 0, 0, 21 },
     { 3, 23, 7, 18, 2, 0, 0, 0 },
-    { 1, 24, 7, 18, 2, 19, 0, 0 }
+    { 1, 24, 5, 18, 2, 19, 0, 0 },
+	
+	// 260 - back to the roots, but crazy (32) - greets?
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 9, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 5, 7, 8, 0, 0, 0, 0 },
+	
+	// 292 - blue again! (32)
+    { 4, 6, 7, 8, 2, 0, 0, 20 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 9, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 5, 7, 8, 2, 0, 0, 0 }
 };
 
 static __forceinline void renderAudio()
@@ -959,6 +979,7 @@ void entry()
         
         u[0] = time; // time
 		u[1] = (float)(time < 4.0f); // black
+		u[2] = 1.0f - (float)(time >= 68.0f && time < 260.0f); // spheres
         
         // hack - assume that the uniforms u[] will always be linked to locations [0-n]
         // given that they are the only uniforms in the shader, it is likely to work on all drivers
