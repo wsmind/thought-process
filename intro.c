@@ -163,7 +163,7 @@ short saw2(unsigned int frame, unsigned int period)
     return (frame % period) * adsr / period / SAW2_VOLUME_DIVIDER - (adsr >> 1) / SAW2_VOLUME_DIVIDER;
 }
 
-#define SQUARE_VOLUME_DIVIDER 8
+#define SQUARE_VOLUME_DIVIDER 12
 short square(unsigned int frame, unsigned int period)
 {
     return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / SQUARE_VOLUME_DIVIDER;
@@ -759,7 +759,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 	
 	// 25 - lasers
 	{
-        NOTE(40), 0xd3,
+        NOTE(40), 0xf3,
         0, 0,
         0, 0,
         0, 0,
@@ -767,7 +767,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0,
         0, 0,
-        NOTE(32), 0xd3,
+        NOTE(32), 0xf3,
         0, 0,
         0, 0,
         0, 0,
@@ -877,7 +877,7 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 17, 12, 16, 18, 14, 00, 0, 00 },
     { 17, 12, 15, 18, 13, 00, 0, 21 },
     { 17, 12, 16, 18, 14, 19, 0, 00 },
-    { 17, 12, 15, 18, 13, 00, 25, 00 },
+    { 17, 12, 15, 18, 13, 00, 25, 20 },
     { 17, 12, 16, 18, 14, 00, 0, 21 },
     { 17, 12, 15, 18, 13, 00, 0, 00 },
     { 1, 12, 16, 18, 14, 19, 20, 22 },
