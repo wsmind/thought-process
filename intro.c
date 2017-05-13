@@ -80,7 +80,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define TRACKER_PERIOD 4725 // 140 bpm (44100 * 60 / 140 / 4)
 #define TRACKER_PATTERN_LENGTH 16 // 16 periods (16th) per pattern
-#define TRACKER_SONG_LENGTH 49 // in patterns
+#define TRACKER_SONG_LENGTH 65 // in patterns
 #define AUDIO_SAMPLES (TRACKER_PERIOD * TRACKER_PATTERN_LENGTH * TRACKER_SONG_LENGTH * 2)
 
 static const unsigned int riffHeader[11] = {
@@ -753,6 +753,26 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 17, 12, 16, 18, 14, 19, 0, 0 },
 	
 	// 164 - more fire (32)
+    { 17, 12, 15, 18, 13, 0, 0, 20 },
+    { 17, 12, 16, 18, 14, 0, 0, 0 },
+    { 17, 12, 15, 18, 13, 0, 0, 21 },
+    { 17, 12, 16, 18, 14, 19, 0, 0 },
+    { 17, 12, 15, 18, 13, 0, 0, 0 },
+    { 17, 12, 16, 18, 14, 0, 0, 21 },
+    { 17, 12, 15, 18, 13, 0, 0, 0 },
+    { 17, 12, 16, 18, 14, 19, 0, 0 },
+	
+	// 196 - craziness (32)
+    { 17, 12, 15, 18, 13, 0, 0, 20 },
+    { 17, 12, 16, 18, 14, 0, 0, 0 },
+    { 17, 12, 15, 18, 13, 0, 0, 0 },
+    { 17, 12, 16, 18, 14, 19, 0, 0 },
+    { 17, 12, 15, 18, 13, 0, 0, 0 },
+    { 17, 12, 16, 18, 14, 0, 0, 21 },
+    { 17, 12, 15, 18, 13, 0, 0, 0 },
+    { 17, 12, 16, 18, 14, 19, 0, 0 },
+	
+	// 228 - craziness (32)
     { 17, 12, 15, 18, 13, 0, 0, 20 },
     { 17, 12, 16, 18, 14, 0, 0, 0 },
     { 17, 12, 15, 18, 13, 0, 0, 21 },
