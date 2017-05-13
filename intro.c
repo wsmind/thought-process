@@ -74,7 +74,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define WIDTH 1920
 #define HEIGHT 1080
-#define UNIFORM_COUNT 3
+#define UNIFORM_COUNT 4
 
 #include "shader.h"
 
@@ -1043,12 +1043,18 @@ void entry()
 		
         float time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
         
-		time += 132.0f;
+		//time += 164.0f;
 		
         u[0] = time; // time
 		u[1] = (float)(time < 4.0f); // black
 		u[1] += (time >= 324.0f) ? (time - 324.0f) * 0.25f : 0.0f;
 		u[2] = 1.0f - (float)(time >= 68.0f && time < 260.0f); // spheres
+		
+		u[3] = 0.0f;
+		if (time >= 164.0f && time < 168.0f)
+			u[3] = 4.0 - (time - 164.0f);
+		else if (time >= 180.0f && time < 184.0f)
+			u[3] = 4.0 - (time - 180.0f);
         
         // hack - assume that the uniforms u[] will always be linked to locations [0-n]
         // given that they are the only uniforms in the shader, it is likely to work on all drivers

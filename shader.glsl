@@ -138,6 +138,7 @@ float tube(vec3 p)
 
 float tubes(vec3 p)
 {
+	p.x += 1000.0 * (ceil(laser) - 1.0);
 	p.xy = rotate(p.xy, 0.2 - laser * 0.4);
 	return min(tube(p + vec3(1.0, 0.0, 0.0)), tube(p - vec3(1.0, 0.0, 0.0)));
 }
@@ -206,7 +207,7 @@ void main(void)
 	saturation = step(36.0, _u[0]) * step(0.0, 260.0 - _u[0]) + step(292, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
 	holeAmount = smoothstep(132.0, 164.0, _u[0]) * step(0.0, 260.0 - _u[0]); //sin(_u[0] * 0.1) * 0.5 + 0.5;
 	crazy = smoothstep(194.0, 196.0, _u[0]); //sin(_u[0] * 0.2) * 0.5 + 0.5;
-	laser = sin(_u[0] * 0.8) * 0.5 + 0.5;
+	laser = fract(_u[3] * 0.5); /*sin(_u[0] * 0.8) * 0.5 + 0.5;*/
 	
 	float shake = (-exp(-mod(_u[0] - 4.0, 32.0) * 4.0) + laser * 0.02) * rand(_u[0]);
 	
