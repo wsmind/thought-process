@@ -150,7 +150,7 @@ short saw(unsigned int frame, unsigned int period)
 	     ;//+ (frame % (period + 1)) * 65535 / period / SAW_VOLUME_DIVIDER - 32767 / SAW_VOLUME_DIVIDER;
 }
 
-#define SAW2_VOLUME_DIVIDER 8
+#define SAW2_VOLUME_DIVIDER 10
 short saw2(unsigned int frame, unsigned int period)
 {
     int adsr = (frame < 4096) ? 65535 - (frame << 4) : 0;
@@ -191,11 +191,13 @@ short stupidkick(unsigned int frame, unsigned int period)
     //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;
 }*/
 
-#define SINE_VOLUME_DIVIDER 16
+#define SINE_VOLUME_DIVIDER 6
 short sine(unsigned int frame, unsigned int period)
 {
 	float phase = TAU * (float)frame / (float)period;
-    return (short)(sin(phase) * 32767.0f) / SINE_VOLUME_DIVIDER;
+	float adsr = fakeexp(-(float)frame * 0.001f);
+	float out = adsr * sin(phase);// + 0.2f * sin(phase * 1.1f);
+    return (short)(out * 32767.0f) / SINE_VOLUME_DIVIDER;
 }
 
 #define REESE_VOLUME_DIVIDER 4
@@ -440,21 +442,21 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 	
 	// 10 - high pitch
 	{
-        NOTE(52), 0xc5,
+        NOTE(52), 0xe5,
         0, 0,
+        NOTE(44), 0xe5,
         0, 0,
+        NOTE(49), 0xe5,
         0, 0,
+        NOTE(44), 0xe5,
         0, 0,
+        NOTE(52), 0xe5,
         0, 0,
+        NOTE(44), 0xe5,
         0, 0,
+        NOTE(49), 0xe5,
         0, 0,
-        NOTE(49), 0xc5,
-        0, 0,
-        0, 0,
-        0, 0,
-        NOTE(44), 0xc5,
-        0, 0,
-        0, 0,
+        NOTE(44), 0xe5,
         0, 0,
     },
 };
@@ -493,15 +495,25 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 5, 7, 8, 2, 10, 0, 0 },
 	
-	//
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 9, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 5, 7, 8, 2, 0, 0, 0 }
+	// 100 - more balls! (32)
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 9, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 5, 7, 8, 2, 10, 0, 0 }
+	
+	// 132 - fire from hell (32)
+    /*{ 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 9, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 5, 7, 8, 2, 10, 0, 0 }*/
 };
 
 static __forceinline void renderAudio()
