@@ -6,6 +6,7 @@ vec2 resolution = vec2(WIDTH, HEIGHT);
 float saturation;
 float holeAmount;
 float crazy;
+float laser;
 
 vec2 rotate(vec2 uv, float a)
 {
@@ -132,14 +133,20 @@ float corridor(vec3 p)
 
 float tube(vec3 p)
 {
-	return length(p.xy) - 0.5;
+	return length(p.xy) - 0.1 * laser;
+}
+
+float tubes(vec3 p)
+{
+	p.xy = rotate(p.xy, 0.2 - laser * 0.4);
+	return min(tube(p + vec3(1.0, 0.0, 0.0)), tube(p - vec3(1.0, 0.0, 0.0)));
 }
 
 float map(vec3 p)
 {
 	//p.xy = rotate(p.xy, u[0] * 0.1);
 	//p.xz = rotate(p.xz, u[0] * 0.07);
-	return min(corridor(p), spheres(p));
+	return min(min(corridor(p), spheres(p)), tubes(p));
 }
 
 vec3 normal(vec3 p)
@@ -199,8 +206,9 @@ void main(void)
 	saturation = step(36.0, _u[0]) * step(0.0, 260.0 - _u[0]) + step(292, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
 	holeAmount = smoothstep(132.0, 164.0, _u[0]) * step(0.0, 260.0 - _u[0]); //sin(_u[0] * 0.1) * 0.5 + 0.5;
 	crazy = smoothstep(194.0, 196.0, _u[0]); //sin(_u[0] * 0.2) * 0.5 + 0.5;
+	laser = sin(_u[0] * 0.8) * 0.5 + 0.5;
 	
-	float shake = -exp(-mod(_u[0] - 4.0, 32.0) * 4.0) * rand(_u[0]);
+	float shake = (-exp(-mod(_u[0] - 4.0, 32.0) * 4.0) + laser * 0.02) * rand(_u[0]);
 	
 	vec2 uv = vec2(gl_FragCoord.xy - resolution.xy * 0.5) / resolution.y;
 	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1 + (crazy * fract(_u[0] * 0.01) + shake) * 6.28);
@@ -224,7 +232,8 @@ void main(void)
 	vec3 sphereLight = mix(vec3(1.0), vec3(1.0, 0.1, 0.0), saturation) * light(pos, n, spheres(pos), 0.2, 2.0);
 	vec3 cubeLight = mix(vec3(1.0), vec3(0.0, 0.7, 1.0), saturation) * light(pos, n, cubes2(pos), 0.1, 4.0) * exp(-fract(_u[0] * 0.5) * 4.0);
 	vec3 holeLight = vec3(1.0, 0.02, 0.0) * light(pos, n, pos.y + mix(2.0, sin(_u[0] * 0.2) * 20.0, crazy) + holeAmount * 2.0, 0.3, 10.0) * holeAmount;
-	vec3 radiance = sphereLight + cubeLight + holeLight + occ * 0.01;
+	vec3 tubeLight = vec3(10.0, 0.0, 0.02) * light(pos, n, tubes(p), 0.2 + laser * 0.2, laser);
+	vec3 radiance = sphereLight + cubeLight + holeLight + tubeLight + occ * 0.01;
 	vec3 color = tonemap(radiance);
 	
 	// white flashes

@@ -1043,7 +1043,7 @@ void entry()
 		
         float time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
         
-		//time += 228.0f;
+		time += 132.0f;
 		
         u[0] = time; // time
 		u[1] = (float)(time < 4.0f); // black
