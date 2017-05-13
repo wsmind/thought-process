@@ -159,9 +159,11 @@ short square(unsigned int frame, unsigned int period)
 #define SINE_VOLUME_DIVIDER 4
 short sine(unsigned int frame, unsigned int period)
 {
-    return (short)(sin((float)frame * 6.28f / (float)period) * 32767.0f) / SINE_VOLUME_DIVIDER;
+	float phase = TAU * (float)frame / (float)period;
+    return (short)(sin(phase) * 32767.0f) / SINE_VOLUME_DIVIDER;
 }
 
+#define REESE_VOLUME_DIVIDER 4
 short reese(unsigned int frame, unsigned int period)
 {
 	float detune = 1.01f;
@@ -169,7 +171,7 @@ short reese(unsigned int frame, unsigned int period)
 	float out = sin(phase) + 0.5f * sin(phase * 2.0) + 0.33f * sin(phase * 3.0)
 	          + sin(phase * detune) + 0.5f * sin(phase * 2.0 * detune) + 0.33f * sin(phase * 3.0 * detune);
 	
-    return (short)(0.25f * out * 32767.0f) / SINE_VOLUME_DIVIDER;
+    return (short)(0.25f * out * 32767.0f) / REESE_VOLUME_DIVIDER;
 }
 
 Instrument instruments[] = {
