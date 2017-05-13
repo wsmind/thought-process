@@ -198,12 +198,12 @@ void main(void)
 {
 	saturation = step(36.0, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
 	holeAmount = smoothstep(132.0, 164.0, _u[0]); //sin(_u[0] * 0.1) * 0.5 + 0.5;
-	crazy = 0.0; //sin(_u[0] * 0.2) * 0.5 + 0.5;
+	crazy = smoothstep(192.0, 196.0, _u[0]); //sin(_u[0] * 0.2) * 0.5 + 0.5;
 	
 	float shake = -exp(-mod(_u[0] - 4.0, 32.0) * 4.0) * rand(_u[0]);
 	
 	vec2 uv = vec2(gl_FragCoord.xy - resolution.xy * 0.5) / resolution.y;
-	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1 + crazy * _u[0] * 0.2 + shake * 6.28);
+	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1 + (crazy * fract(_u[0] * 0.04) + shake) * 6.28);
 	
 	vec3 dir = normalize(vec3(uv, 0.5 - length(uv) * 0.4));
 	vec3 pos = vec3(shake, -shake, _u[0]);
