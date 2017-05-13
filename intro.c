@@ -80,7 +80,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define TRACKER_PERIOD 4725 // 140 bpm (44100 * 60 / 140 / 4)
 #define TRACKER_PATTERN_LENGTH 16 // 16 periods (16th) per pattern
-#define TRACKER_SONG_LENGTH 33 // in patterns
+#define TRACKER_SONG_LENGTH 41 // in patterns
 #define AUDIO_SAMPLES (TRACKER_PERIOD * TRACKER_PATTERN_LENGTH * TRACKER_SONG_LENGTH * 2)
 
 static const unsigned int riffHeader[11] = {
@@ -300,9 +300,9 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0
     },
 	
-	// 3
+	// 3 - FREE
     {
-        NOTE(21), 0xc1,
+        NOTE(18), 0xc3,
         0, 0,
         0, 0,
         0, 0,
@@ -310,7 +310,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0,
         0, 0,
-        NOTE(23), 0xc1,
+        0, 0,
         0, 0,
         0, 0,
         0, 0,
@@ -459,6 +459,126 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         NOTE(44), 0xe5,
         0, 0,
     },
+	
+	// 11 - lead fill
+	{
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(42), 0xe2,
+        NOTE(44), 0xe2,
+        NOTE(42), 0xe2,
+        0, 0,
+        NOTE(44), 0xe2,
+        0, 0,
+        NOTE(47), 0xe2,
+        0, 0,
+        NOTE(49), 0xe2,
+        0, 0
+    },
+	
+	// 12 - lead variation
+	{
+        NOTE(42), 0xe2,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0
+    },
+	
+	// 13 - bass variation
+    {
+        NOTE(6), 0xc3,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(0), 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(6), 0xc3,
+        0, 0,
+        0, 0,
+        0, 0
+    },
+	
+	// 14 - bass variation 2
+    {
+        NOTE(0), 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(4), 0xc3,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0
+    },
+	
+	// 15 - reese variation
+    {
+        NOTE(18), 0xc6,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(0), 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(18), 0xc6,
+        0, 0,
+        0, 0,
+        0, 0
+    },
+	
+	// 16 - reese variation 2
+    {
+        NOTE(0), 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(16), 0xc6,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0
+    }
 };
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
@@ -503,17 +623,19 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
-    { 4, 5, 7, 8, 2, 10, 0, 0 }
+    { 4, 11, 7, 8, 2, 10, 0, 0 },
 	
 	// 132 - fire from hell (32)
-    /*{ 4, 6, 7, 8, 2, 10, 0, 0 },
-    { 4, 6, 7, 8, 2, 10, 0, 0 },
-    { 4, 6, 7, 8, 2, 10, 0, 0 },
-    { 4, 9, 7, 8, 2, 10, 0, 0 },
-    { 4, 6, 7, 8, 2, 10, 0, 0 },
-    { 4, 6, 7, 8, 2, 10, 0, 0 },
-    { 4, 6, 7, 8, 2, 10, 0, 0 },
-    { 4, 5, 7, 8, 2, 10, 0, 0 }*/
+    { 4, 12, 15, 0, 13, 10, 0, 0 },
+    { 4, 12, 16, 0, 14, 10, 0, 0 },
+    { 4, 12, 15, 0, 13, 10, 0, 0 },
+    { 4, 12, 16, 0, 14, 10, 0, 0 },
+    { 4, 12, 15, 0, 13, 10, 0, 0 },
+    { 4, 12, 16, 0, 14, 10, 0, 0 },
+    { 4, 12, 15, 0, 13, 10, 0, 0 },
+    { 4, 12, 16, 0, 14, 10, 0, 0 }
+	
+	// 164
 };
 
 static __forceinline void renderAudio()
