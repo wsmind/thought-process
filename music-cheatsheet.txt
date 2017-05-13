@@ -17,5 +17,8 @@ Bass scale
 Treble scale
 25 - 28 - 30 - 32 - 35 - (37)
 
-Solo scale
+Lead scale
 37 - 40 - 42 - 44 - 47 - (49)
+
+High scale
+49 - 52 - 54 - 56 - 59 - (61)

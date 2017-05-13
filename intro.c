@@ -191,7 +191,7 @@ short stupidkick(unsigned int frame, unsigned int period)
     //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;
 }*/
 
-#define SINE_VOLUME_DIVIDER 4
+#define SINE_VOLUME_DIVIDER 16
 short sine(unsigned int frame, unsigned int period)
 {
 	float phase = TAU * (float)frame / (float)period;
@@ -240,7 +240,7 @@ ChannelState channels[CHANNELS];
 unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
     // note, effects (4 bits) + instrument (4 bits)
     {
-        0, 0,
+        NOTE(0), 0,
         0, 0,
         0, 0,
         0, 0,
@@ -320,19 +320,19 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 	
 	// 4 - beat
     {
-        NOTE(21), 0xc4,
+        NOTE(37), 0xc4,
         0, 0,
         0, 0,
         0, 0,
-        NOTE(21), 0xc4,
+        NOTE(37), 0xc4,
         0, 0,
         0, 0,
         0, 0,
-        NOTE(21), 0xc4,
+        NOTE(37), 0xc4,
         0, 0,
         0, 0,
         0, 0,
-        NOTE(21), 0xc4,
+        NOTE(37), 0xc4,
         0, 0,
         0, 0,
         0, 0
@@ -437,6 +437,26 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         NOTE(40), 0xe2,
         0, 0
     },
+	
+	// 10 - high pitch
+	{
+        NOTE(52), 0xc5,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(49), 0xc5,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(44), 0xc5,
+        0, 0,
+        0, 0,
+        0, 0,
+    },
 };
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
@@ -464,14 +484,14 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 5, 7, 8, 2, 0, 0, 0 },
 	
 	// 68 - balls (32)
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 9, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 5, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 9, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 5, 7, 8, 2, 10, 0, 0 },
 	
 	//
     { 4, 6, 7, 8, 2, 0, 0, 0 },
