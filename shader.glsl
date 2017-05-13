@@ -196,7 +196,7 @@ float light(vec3 p, vec3 n, float d, float range, float energy)
 void main(void)
 {
 	// will be switched to uniform
-	holeAmount = sin(_u[0] * 0.1) * 0.5 + 0.5;
+	holeAmount = 0.0; //sin(_u[0] * 0.1) * 0.5 + 0.5;
 	//crazy = sin(_u[0] * 0.2) * 0.5 + 0.5;
 	
 	vec2 uv = vec2(gl_FragCoord.xy - resolution.xy * 0.5) / resolution.y;

@@ -117,7 +117,8 @@ short silence(unsigned int frame, unsigned int period)
 #define SAW_VOLUME_DIVIDER 4
 short saw(unsigned int frame, unsigned int period)
 {
-    return (frame % period) * 65535 / period / SAW_VOLUME_DIVIDER - 32767 / SAW_VOLUME_DIVIDER;
+    return (frame % period) * 65535 / period / SAW_VOLUME_DIVIDER - 32767 / SAW_VOLUME_DIVIDER
+	     ;//+ (frame % (period + 1)) * 65535 / period / SAW_VOLUME_DIVIDER - 32767 / SAW_VOLUME_DIVIDER;
 }
 
 #define SAW2_VOLUME_DIVIDER 6
@@ -127,10 +128,36 @@ short saw2(unsigned int frame, unsigned int period)
     return (frame % period) * adsr / period / SAW2_VOLUME_DIVIDER - (adsr >> 1) / SAW2_VOLUME_DIVIDER;
 }
 
+#define KICK_VOLUME_DIVIDER 4
+short kick(unsigned int frame, unsigned int period)
+{
+    int adsr = 65535;//(frame < 4096) ? 65535 - (frame << 4) : 0;
+	int offset = (frame >> 3) + 1;
+    period = offset;
+	frame += offset;
+    return (frame % period) * adsr / period / KICK_VOLUME_DIVIDER - (adsr >> 1) / KICK_VOLUME_DIVIDER;
+    //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;
+}
+
+/*#define KICK_VOLUME_DIVIDER 4
+short stupidkick(unsigned int frame, unsigned int period)
+{
+    int adsr = 65535;//(frame < 4096) ? 65535 - (frame << 4) : 0;
+    period = (frame < 4096) ? 1024 - (frame >> 2) : 1;
+    return (frame % period) * adsr / period / KICK_VOLUME_DIVIDER - (adsr >> 1) / KICK_VOLUME_DIVIDER;
+    //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;
+}*/
+
+#define SQUARE_VOLUME_DIVIDER 4
+short square(unsigned int frame, unsigned int period)
+{
+    return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / SQUARE_VOLUME_DIVIDER;
+}
+
 Instrument instruments[] = {
     silence,
-    saw,
-    saw2
+    kick,
+    silence
 };
 
 #define CHANNELS 2
@@ -168,7 +195,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         NOTE(44), 0xe2,
         0, 0,
-        NOTE(47), 0xe1,
+        0, 0, //NOTE(47), 0xe1,
         0, 0
     },
     {
@@ -294,8 +321,8 @@ void entry()
     float u[UNIFORM_COUNT];
     
     // debug
-    /*HFILE audioFile;
-    WORD bytesWritten;*/
+    HFILE audioFile;
+    WORD bytesWritten;
     
     hwnd = CreateWindow("static", NULL, WS_POPUP | WS_VISIBLE, 0, 0, WIDTH, HEIGHT, NULL, NULL, NULL, 0);
     hdc = GetDC(hwnd);
@@ -317,9 +344,9 @@ void entry()
     memcpy(audioBuffer, &riffHeader, sizeof(riffHeader));
     
     // debug audio output
-    /*audioFile = CreateFile("audio.wav", GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    audioFile = CreateFile("audio.wav", GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     WriteFile(audioFile, audioBuffer, sizeof(audioBuffer), &bytesWritten, NULL);
-    CloseHandle(audioFile);*/
+    CloseHandle(audioFile);
     
     sndPlaySound((LPCSTR)audioBuffer, SND_ASYNC | SND_MEMORY);
     
