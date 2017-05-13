@@ -917,8 +917,8 @@ void entry()
     float u[UNIFORM_COUNT];
     
     // debug
-    HFILE audioFile;
-    WORD bytesWritten;
+    /*HFILE audioFile;
+    WORD bytesWritten;*/
     
     hwnd = CreateWindow("static", NULL, WS_POPUP | WS_VISIBLE, 0, 0, WIDTH, HEIGHT, NULL, NULL, NULL, 0);
     hdc = GetDC(hwnd);
@@ -940,9 +940,9 @@ void entry()
     memcpy(audioBuffer, &riffHeader, sizeof(riffHeader));
     
     // debug audio output
-    audioFile = CreateFile("audio.wav", GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    /*audioFile = CreateFile("audio.wav", GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     WriteFile(audioFile, audioBuffer, sizeof(audioBuffer), &bytesWritten, NULL);
-    CloseHandle(audioFile);
+    CloseHandle(audioFile);*/
     
     sndPlaySound((LPCSTR)audioBuffer, SND_ASYNC | SND_MEMORY);
     
