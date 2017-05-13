@@ -109,6 +109,33 @@ short auxBuffer[AUDIO_SAMPLES + DELAY_LEFT + DELAY_RIGHT];
 
 float TAU = 2.0f * 3.14159265f;
 
+void __declspec(naked) _CIpow()
+{
+	_asm
+	{
+		fxch st(1)
+		fyl2x
+		fld st(0)
+		frndint
+		fsubr st(1),st(0)
+		fxch st(1)
+		fchs
+		f2xm1
+		fld1
+		faddp st(1),st(0)
+		fscale
+		fstp st(1)
+		ret
+	}
+}
+
+float fakeexp(float value)
+{
+	// complete fake approximation, but the curves look close enough ^^
+	float result = 1.0f - pow(-value * 0.2f, 0.3f);
+	return result > 0.0f ? result : 0.0f;
+}
+
 typedef short (*Instrument)(unsigned int frame, unsigned int frequency);
 
 short silence(unsigned int frame, unsigned int period)
@@ -130,15 +157,29 @@ short saw2(unsigned int frame, unsigned int period)
     return (frame % period) * adsr / period / SAW2_VOLUME_DIVIDER - (adsr >> 1) / SAW2_VOLUME_DIVIDER;
 }
 
-#define KICK_VOLUME_DIVIDER 4
+#define SQUARE_VOLUME_DIVIDER 6
+short square(unsigned int frame, unsigned int period)
+{
+    return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / SQUARE_VOLUME_DIVIDER;
+}
+
+#define KICK_VOLUME_DIVIDER 1
 short kick(unsigned int frame, unsigned int period)
 {
+	/*float e = fakeexp(-2.0f);
+	return (short)e;
     int adsr = 65536;//(frame < 4096) ? 65535 - (frame << 4) : 0;
 	int offset = frame / 10000;
     period = 2048 + offset;
 	//frame += offset;
     return (frame % period) * adsr / period / KICK_VOLUME_DIVIDER - (adsr >> 1) / KICK_VOLUME_DIVIDER;
-    //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;
+    //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;*/
+	
+	float t = (float)frame;
+	float phase = TAU * t / (float)period;
+	float out = fakeexp(-t * 0.001f) * sin(phase * fakeexp(-t * 0.0002f));
+	
+    return (short)(out * 32767.0f) / KICK_VOLUME_DIVIDER;
 }
 
 /*#define KICK_VOLUME_DIVIDER 4
@@ -149,12 +190,6 @@ short stupidkick(unsigned int frame, unsigned int period)
     return (frame % period) * adsr / period / KICK_VOLUME_DIVIDER - (adsr >> 1) / KICK_VOLUME_DIVIDER;
     //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;
 }*/
-
-#define SQUARE_VOLUME_DIVIDER 6
-short square(unsigned int frame, unsigned int period)
-{
-    return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / SQUARE_VOLUME_DIVIDER;
-}
 
 #define SINE_VOLUME_DIVIDER 4
 short sine(unsigned int frame, unsigned int period)
@@ -177,10 +212,14 @@ short reese(unsigned int frame, unsigned int period)
 Instrument instruments[] = {
     silence,
     reese,
-    saw2
+    saw2,
+	square,
+	kick,
+	sine,
+	reese
 };
 
-#define CHANNELS 2
+#define CHANNELS 4
 
 typedef struct
 {
@@ -200,6 +239,24 @@ ChannelState channels[CHANNELS];
 
 unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
     // note, effects (4 bits) + instrument (4 bits)
+    {
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0
+    },
     {
         NOTE(37), 0xe2,
         0, 0,
@@ -253,18 +310,36 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0,
         0, 0
+    },
+    {
+        NOTE(21), 0xc4,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(21), 0xc4,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(21), 0xc4,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(21), 0xc4,
+        0, 0,
+        0, 0,
+        0, 0
     }
 };
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
-    { 0, 1 },
-    { 0, 1 },
-    { 0, 2 },
-    { 0, 1 },
-    { 0, 1 },
-    { 0, 1 },
-    { 0, 2 },
-    { 0, 1 }
+    { 0, 2, 4, 0 },
+    { 1, 2, 4, 0 },
+    { 1, 3, 4, 0 },
+    { 1, 2, 4, 0 },
+    { 1, 2, 4, 0 },
+    { 1, 2, 4, 0 },
+    { 1, 3, 4, 0 },
+    { 1, 2, 4, 0 }
 };
 
 static __forceinline void renderAudio()
