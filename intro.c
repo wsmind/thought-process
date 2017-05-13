@@ -80,7 +80,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define TRACKER_PERIOD 4725 // 140 bpm (44100 * 60 / 140 / 4)
 #define TRACKER_PATTERN_LENGTH 16 // 16 periods (16th) per pattern
-#define TRACKER_SONG_LENGTH 82 // in patterns
+#define TRACKER_SONG_LENGTH 85 // in patterns
 #define AUDIO_SAMPLES (TRACKER_PERIOD * TRACKER_PATTERN_LENGTH * TRACKER_SONG_LENGTH * 2)
 
 static const unsigned int riffHeader[11] = {
@@ -893,14 +893,14 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 3, 9, 7, 8, 2, 10, 22, 0 },
 	
 	// 228 - craziness (32)
-    { 3, 23, 7, 18, 2, 0, 0, 20 },
-    { 1, 24, 7, 18, 2, 0, 0, 0 },
-    { 4, 6, 7, 18, 2, 0, 0, 21 },
-    { 3, 6, 7, 18, 2, 19, 0, 0 },
-    { 1, 26, 7, 18, 2, 0, 0, 0 },
-    { 4, 27, 7, 18, 2, 0, 0, 21 },
-    { 3, 6, 7, 18, 2, 0, 0, 0 },
-    { 1, 11, 5, 18, 2, 19, 0, 0 },
+    { 3, 23, 7, 8, 2, 10, 2, 20 },
+    { 1, 24, 7, 8, 2, 10, 22, 0 },
+    { 4, 6, 7, 8, 2, 10, 22, 21 },
+    { 3, 6, 7, 8, 2, 10, 22, 19 },
+    { 1, 26, 7, 8, 2, 10, 22, 0 },
+    { 4, 27, 7, 8, 2, 10, 22, 21 },
+    { 3, 6, 7, 8, 2, 10, 22, 0 },
+    { 1, 11, 5, 8, 2, 10, 22, 19 },
 	
 	// 260 - back to the roots, but crazy (32) - greets?
     { 4, 6, 7, 8, 0, 0, 0, 0 },
@@ -923,7 +923,10 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 5, 7, 8, 2, 0, 0, 0 },
 	
 	// 324 - end
-    { 0, 6, 0, 0, 0, 0, 0, 0 }
+    { 0, 6, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 
 static __forceinline void renderAudio()
