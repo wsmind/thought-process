@@ -163,7 +163,7 @@ short saw2(unsigned int frame, unsigned int period)
     return (frame % period) * adsr / period / SAW2_VOLUME_DIVIDER - (adsr >> 1) / SAW2_VOLUME_DIVIDER;
 }
 
-#define SQUARE_VOLUME_DIVIDER 6
+#define SQUARE_VOLUME_DIVIDER 8
 short square(unsigned int frame, unsigned int period)
 {
     return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / SQUARE_VOLUME_DIVIDER;
@@ -759,7 +759,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 	
 	// 25 - lasers
 	{
-        NOTE(35), 0xe3,
+        NOTE(40), 0xd3,
         0, 0,
         0, 0,
         0, 0,
@@ -767,27 +767,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0,
         0, 0,
-        NOTE(32), 0xe3,
-        0, 0,
-        0, 0,
-        0, 0,
-        0, 0,
-        0, 0,
-        0, 0,
-        0, 0,
-    },
-	
-	// 26 - lasers
-	{
-        NOTE(40), 0xe3,
-        0, 0,
-        0, 0,
-        0, 0,
-        0, 0,
-        0, 0,
-        0, 0,
-        0, 0,
-        NOTE(37), 0xe3,
+        NOTE(32), 0xd3,
         0, 0,
         0, 0,
         0, 0,
@@ -800,7 +780,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
 	// 0 - intro (4)
-    { 0, 5, 0, 0, 0, 0, 0, 0 },
+    /*{ 0, 5, 0, 0, 0, 0, 0, 0 },
 	
 	// 4 - black & white start (32)
     { 4, 6, 7, 8, 0, 0, 0, 0 },
@@ -840,7 +820,7 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 6, 7, 8, 2, 10, 0, 21 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
-    { 4, 11, 7, 8, 2, 10, 0, 22 },
+    { 4, 11, 7, 8, 2, 10, 0, 22 },*/
 	
 	// 132 - fire from hell (32)
     { 17, 12, 15, 18, 13, 0, 0, 20 },
@@ -853,11 +833,11 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 17, 12, 16, 18, 14, 19, 0, 0 },
 	
 	// 164 - more fire (32)
-    { 17, 12, 15, 18, 13, 00, 26, 20 },
+    { 17, 12, 15, 18, 13, 00, 25, 20 },
     { 17, 12, 16, 18, 14, 00, 0, 00 },
     { 17, 12, 15, 18, 13, 00, 0, 21 },
     { 17, 12, 16, 18, 14, 19, 0, 00 },
-    { 17, 12, 15, 18, 13, 00, 26, 00 },
+    { 17, 12, 15, 18, 13, 00, 25, 00 },
     { 17, 12, 16, 18, 14, 00, 0, 21 },
     { 17, 12, 15, 18, 13, 00, 0, 00 },
     { 1, 12, 16, 18, 14, 19, 20, 22 },
@@ -1017,6 +997,8 @@ void entry()
 		
         float time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
         
+		time += 132.0f;
+		
         u[0] = time; // time
 		u[1] = (float)(time < 4.0f); // black
 		u[2] = 1.0f - (float)(time >= 68.0f && time < 260.0f); // spheres
