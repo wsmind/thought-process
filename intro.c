@@ -210,13 +210,13 @@ short reese(unsigned int frame, unsigned int period)
 }
 
 Instrument instruments[] = {
-    silence,
-    reese,
-    saw2,
-	square,
-	kick,
-	sine,
-	reese
+    /* 0 */ silence,
+    /* 1 */ saw,
+    /* 2 */ saw2,
+	/* 3 */ square,
+	/* 4 */ kick,
+	/* 5 */ sine,
+	/* 6 */ reese
 };
 
 #define CHANNELS 4
@@ -257,6 +257,8 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0
     },
+	
+	// 1
     {
         NOTE(37), 0xe2,
         0, 0,
@@ -275,6 +277,8 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         NOTE(47), 0xe1,
         0, 0
     },
+	
+	// 2 - bass
     {
         NOTE(13), 0xc1,
         0, 0,
@@ -293,6 +297,8 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         NOTE(28), 0xc1,
         0, 0
     },
+	
+	// 3
     {
         NOTE(21), 0xc1,
         0, 0,
@@ -311,6 +317,8 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0
     },
+	
+	// 4 - beat
     {
         NOTE(21), 0xc4,
         0, 0,
@@ -328,18 +336,58 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0,
         0, 0
+    },
+	
+	// 5 - intro
+	{
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(42), 0xe2,
+        NOTE(44), 0xe2,
+        NOTE(42), 0xe2,
+        0, 0,
+        NOTE(40), 0xe2,
+        0, 0,
+        NOTE(37), 0xe2,
+        0, 0,
+        NOTE(35), 0xe2,
+        0, 0
+    },
+	
+	// 6 - start
+	{
+        NOTE(25), 0xd1,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0
     }
 };
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
-    { 0, 2, 4, 0 },
-    { 1, 2, 4, 0 },
-    { 1, 3, 4, 0 },
-    { 1, 2, 4, 0 },
-    { 1, 2, 4, 0 },
-    { 1, 2, 4, 0 },
-    { 1, 3, 4, 0 },
-    { 1, 2, 4, 0 }
+    { 0, 5, 0, 0 },
+    { 4, 6, 0, 0 },
+    { 4, 0, 0, 0 },
+    { 4, 0, 0, 0 },
+    { 4, 0, 0, 0 },
+    { 4, 0, 0, 0 },
+    { 4, 0, 0, 0 },
+    { 4, 0, 0, 0 }
 };
 
 static __forceinline void renderAudio()
