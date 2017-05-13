@@ -1,0 +1,15 @@
+/* 0 */ silence,
+
+/* 1 */ saw,
+
+/* 2 */ saw2,
+
+/* 3 */ square,
+/* 4 */ kick,
+
+/* 5 */ sine,
+
+/* 6 */ reese
+
+Solo scale
+37 - 40 - 42 - 44 - 47 - (49)

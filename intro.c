@@ -219,7 +219,7 @@ Instrument instruments[] = {
 	/* 6 */ reese
 };
 
-#define CHANNELS 4
+#define CHANNELS 8
 
 typedef struct
 {
@@ -280,7 +280,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 	
 	// 2 - bass
     {
-        NOTE(13), 0xc1,
+        NOTE(13), 0xc6,
         0, 0,
         0, 0,
         0, 0,
@@ -288,13 +288,13 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0,
         0, 0,
-        NOTE(23), 0xc1,
+        NOTE(23), 0xc6,
         0, 0,
         0, 0,
         0, 0,
         0, 0,
         0, 0,
-        NOTE(28), 0xc1,
+        NOTE(28), 0xc6,
         0, 0
     },
 	
@@ -360,7 +360,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 	
 	// 6 - start
 	{
-        NOTE(25), 0xd1,
+        NOTE(37), 0xe2,
         0, 0,
         0, 0,
         0, 0,
@@ -376,18 +376,87 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0,
         0, 0
-    }
+    },
+	
+	// 7 - chords
+	{
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(25), 0xe2,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(25), 0xe2,
+        0, 0,
+        0, 0,
+        0, 0
+    },
+	
+	// 8 - chords
+	{
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(32), 0xe2,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(32), 0xe2,
+        0, 0,
+        0, 0,
+        0, 0
+    },
+	
+	// 9 - down
+	{
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        NOTE(49), 0xe2,
+        0, 0,
+        NOTE(47), 0xe2,
+        0, 0,
+        NOTE(44), 0xe2,
+        NOTE(42), 0xe2,
+        NOTE(40), 0xe2,
+        0, 0
+    },
 };
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
-    { 0, 5, 0, 0 },
-    { 4, 6, 0, 0 },
-    { 4, 0, 0, 0 },
-    { 4, 0, 0, 0 },
-    { 4, 0, 0, 0 },
-    { 4, 0, 0, 0 },
-    { 4, 0, 0, 0 },
-    { 4, 0, 0, 0 }
+	// intro
+    { 0, 5, 0, 0, 0, 0, 0, 0 },
+	
+	// start
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 9, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 9, 7, 8, 2, 0, 0, 0 },
+	
+	//
+    { 4, 0, 0, 0, 0, 0, 0, 0 },
+    { 4, 0, 0, 0, 0, 0, 0, 0 },
+    { 4, 0, 0, 0, 0, 0, 0, 0 }
 };
 
 static __forceinline void renderAudio()
