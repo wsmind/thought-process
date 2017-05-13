@@ -80,7 +80,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define TRACKER_PERIOD 4725 // 140 bpm (44100 * 60 / 140 / 4)
 #define TRACKER_PATTERN_LENGTH 16 // 16 periods (16th) per pattern
-#define TRACKER_SONG_LENGTH 81 // in patterns
+#define TRACKER_SONG_LENGTH 82 // in patterns
 #define AUDIO_SAMPLES (TRACKER_PERIOD * TRACKER_PATTERN_LENGTH * TRACKER_SONG_LENGTH * 2)
 
 static const unsigned int riffHeader[11] = {
@@ -820,7 +820,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
 	// 0 - intro (4)
-    /*{ 0, 5, 0, 0, 0, 0, 0, 0 },
+    { 0, 5, 0, 0, 0, 0, 0, 0 },
 	
 	// 4 - black & white start (32)
     { 4, 6, 7, 8, 0, 0, 0, 0 },
@@ -890,7 +890,7 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 3, 26, 7, 8, 2, 10, 22, 21 },
     { 1, 27, 7, 8, 2, 10, 22, 0 },
     { 4, 6, 7, 8, 2, 10, 22, 0 },
-    { 3, 9, 7, 8, 2, 10, 22, 0 },*/
+    { 3, 9, 7, 8, 2, 10, 22, 0 },
 	
 	// 228 - craziness (32)
     { 3, 23, 7, 18, 2, 0, 0, 20 },
@@ -920,9 +920,10 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 5, 7, 8, 2, 0, 0, 0 }
+    { 4, 5, 7, 8, 2, 0, 0, 0 },
 	
 	// 324 - end
+    { 0, 6, 0, 0, 0, 0, 0, 0 }
 };
 
 static __forceinline void renderAudio()
@@ -1039,10 +1040,11 @@ void entry()
 		
         float time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
         
-		time += 228.0f;
+		//time += 228.0f;
 		
         u[0] = time; // time
 		u[1] = (float)(time < 4.0f); // black
+		u[1] += (time >= 324.0f) ? (time - 324.0f) * 0.25f : 0.0f;
 		u[2] = 1.0f - (float)(time >= 68.0f && time < 260.0f); // spheres
         
         // hack - assume that the uniforms u[] will always be linked to locations [0-n]
