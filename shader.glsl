@@ -198,7 +198,7 @@ void main(void)
 {
 	saturation = step(36.0, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
 	holeAmount = smoothstep(132.0, 164.0, _u[0]); //sin(_u[0] * 0.1) * 0.5 + 0.5;
-	crazy = smoothstep(192.0, 196.0, _u[0]); //sin(_u[0] * 0.2) * 0.5 + 0.5;
+	crazy = smoothstep(194.0, 196.0, _u[0]); //sin(_u[0] * 0.2) * 0.5 + 0.5;
 	
 	float shake = -exp(-mod(_u[0] - 4.0, 32.0) * 4.0) * rand(_u[0]);
 	
