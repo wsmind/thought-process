@@ -107,6 +107,8 @@ static const unsigned int riffHeader[11] = {
 short audioBuffer[AUDIO_SAMPLES + 22];
 short auxBuffer[AUDIO_SAMPLES + DELAY_LEFT + DELAY_RIGHT];
 
+float TAU = 2.0f * 3.14159265f;
+
 typedef short (*Instrument)(unsigned int frame, unsigned int frequency);
 
 short silence(unsigned int frame, unsigned int period)
@@ -114,7 +116,7 @@ short silence(unsigned int frame, unsigned int period)
     return 0;
 }
 
-#define SAW_VOLUME_DIVIDER 4
+#define SAW_VOLUME_DIVIDER 5
 short saw(unsigned int frame, unsigned int period)
 {
     return (frame % period) * 65535 / period / SAW_VOLUME_DIVIDER - 32767 / SAW_VOLUME_DIVIDER
@@ -148,7 +150,7 @@ short stupidkick(unsigned int frame, unsigned int period)
     //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;
 }*/
 
-#define SQUARE_VOLUME_DIVIDER 4
+#define SQUARE_VOLUME_DIVIDER 6
 short square(unsigned int frame, unsigned int period)
 {
     return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / SQUARE_VOLUME_DIVIDER;
@@ -157,13 +159,23 @@ short square(unsigned int frame, unsigned int period)
 #define SINE_VOLUME_DIVIDER 4
 short sine(unsigned int frame, unsigned int period)
 {
-    return (short)(sin((float)frame * 3.141592f / (float)period) * 32767.0f) / SINE_VOLUME_DIVIDER;
+    return (short)(sin((float)frame * 6.28f / (float)period) * 32767.0f) / SINE_VOLUME_DIVIDER;
+}
+
+short reese(unsigned int frame, unsigned int period)
+{
+	float detune = 1.01f;
+	float phase = TAU * (float)frame / (float)period;
+	float out = sin(phase) + 0.5f * sin(phase * 2.0) + 0.33f * sin(phase * 3.0)
+	          + sin(phase * detune) + 0.5f * sin(phase * 2.0 * detune) + 0.33f * sin(phase * 3.0 * detune);
+	
+    return (short)(0.25f * out * 32767.0f) / SINE_VOLUME_DIVIDER;
 }
 
 Instrument instruments[] = {
     silence,
-    sine,
-    silence
+    reese,
+    saw2
 };
 
 #define CHANNELS 2
@@ -201,7 +213,7 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         NOTE(44), 0xe2,
         0, 0,
-        0, 0, //NOTE(47), 0xe1,
+        NOTE(47), 0xe1,
         0, 0
     },
     {
