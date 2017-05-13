@@ -80,7 +80,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define TRACKER_PERIOD 4725 // 140 bpm (44100 * 60 / 140 / 4)
 #define TRACKER_PATTERN_LENGTH 16 // 16 periods (16th) per pattern
-#define TRACKER_SONG_LENGTH 12 // in patterns
+#define TRACKER_SONG_LENGTH 33 // in patterns
 #define AUDIO_SAMPLES (TRACKER_PERIOD * TRACKER_PATTERN_LENGTH * TRACKER_SONG_LENGTH * 2)
 
 static const unsigned int riffHeader[11] = {
@@ -288,13 +288,13 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         0, 0,
         0, 0,
         0, 0,
-        NOTE(23), 0xc6,
+        NOTE(11), 0xc6,
         0, 0,
         0, 0,
         0, 0,
         0, 0,
         0, 0,
-        NOTE(28), 0xc6,
+        NOTE(16), 0xc6,
         0, 0
     },
 	
@@ -447,16 +447,41 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 9, 7, 8, 2, 0, 0, 0 },
+    { 4, 5, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 9, 7, 8, 2, 0, 0, 0 },
 	
 	//
-    { 4, 0, 0, 0, 0, 0, 0, 0 },
-    { 4, 0, 0, 0, 0, 0, 0, 0 },
-    { 4, 0, 0, 0, 0, 0, 0, 0 }
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 5, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 9, 7, 8, 2, 0, 0, 0 },
+	
+	//
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 5, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 9, 7, 8, 2, 0, 0, 0 },
+	
+	//
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 5, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 9, 7, 8, 2, 0, 0, 0 }
 };
 
 static __forceinline void renderAudio()
