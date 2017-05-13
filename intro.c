@@ -131,10 +131,10 @@ short saw2(unsigned int frame, unsigned int period)
 #define KICK_VOLUME_DIVIDER 4
 short kick(unsigned int frame, unsigned int period)
 {
-    int adsr = 65535;//(frame < 4096) ? 65535 - (frame << 4) : 0;
-	int offset = (frame >> 3) + 1;
-    period = offset;
-	frame += offset;
+    int adsr = 65536;//(frame < 4096) ? 65535 - (frame << 4) : 0;
+	int offset = frame / 10000;
+    period = 2048 + offset;
+	//frame += offset;
     return (frame % period) * adsr / period / KICK_VOLUME_DIVIDER - (adsr >> 1) / KICK_VOLUME_DIVIDER;
     //return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / KICK_VOLUME_DIVIDER;
 }
@@ -154,9 +154,15 @@ short square(unsigned int frame, unsigned int period)
     return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / SQUARE_VOLUME_DIVIDER;
 }
 
+#define SINE_VOLUME_DIVIDER 4
+short sine(unsigned int frame, unsigned int period)
+{
+    return (short)(sin((float)frame * 3.141592f / (float)period) * 32767.0f) / SINE_VOLUME_DIVIDER;
+}
+
 Instrument instruments[] = {
     silence,
-    kick,
+    sine,
     silence
 };
 
@@ -355,6 +361,10 @@ void entry()
     startTime = timeGetTime();
     while (!GetAsyncKeyState(VK_ESCAPE))
     {
+		// avoid 'not responding' system messages
+		MSG msg;
+		PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+		
         float time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
         
         u[0] = time;
