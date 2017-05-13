@@ -74,7 +74,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
 
 #define WIDTH 1920
 #define HEIGHT 1080
-#define UNIFORM_COUNT 1
+#define UNIFORM_COUNT 2
 
 #include "shader.h"
 
@@ -440,10 +440,20 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
 };
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
-	// intro
+	// 0 - intro (4)
     { 0, 5, 0, 0, 0, 0, 0, 0 },
 	
-	// start
+	// 4 - black & white start (32)
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 9, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 6, 7, 8, 0, 0, 0, 0 },
+    { 4, 5, 7, 8, 0, 0, 0, 0 },
+	
+	// 36 - blue! (32)
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
@@ -453,17 +463,7 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 5, 7, 8, 2, 0, 0, 0 },
 	
-	//
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 9, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
-    { 4, 5, 7, 8, 2, 0, 0, 0 },
-	
-	//
+	// 68 - balls (32)
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
@@ -598,7 +598,8 @@ void entry()
 		
         float time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
         
-        u[0] = time;
+        u[0] = time; // time
+		u[1] = (float)(time < 4.0f); // black
         
         // hack - assume that the uniforms u[] will always be linked to locations [0-n]
         // given that they are the only uniforms in the shader, it is likely to work on all drivers

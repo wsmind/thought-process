@@ -3,8 +3,9 @@
 uniform float _u[UNIFORM_COUNT];
 vec2 resolution = vec2(WIDTH, HEIGHT);
 
+float saturation;
 float holeAmount;
-float crazy = 0.0;
+float crazy;
 
 vec2 rotate(vec2 uv, float a)
 {
@@ -98,7 +99,7 @@ float cubes2(vec3 p)
 
 float spheres(vec3 p)
 {
-	float ringSize = 1.4 * (sin(_u[0] * 0.1) * 0.4 + 0.6);
+	float ringSize = 1.4 * (sin(_u[0] * 0.1) * 0.4 + 0.6) + 50.0 * (1.0 - step(68.0, _u[0]));
 	p.xy = rotate(p.xy, _u[0] * 0.2 + floor(p.z / 10.0 + 0.2));
 	p.xy += ringSize;
 	p = repeat3(p, vec3(ringSize * 2.0, ringSize * 2.0, 10.0));
@@ -195,9 +196,9 @@ float light(vec3 p, vec3 n, float d, float range, float energy)
 
 void main(void)
 {
-	// will be switched to uniform
-	holeAmount = sin(_u[0] * 0.1) * 0.5 + 0.5;
-	crazy = 0.0;//sin(_u[0] * 0.2) * 0.5 + 0.5;
+	saturation = step(36.0, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
+	holeAmount = 0.0; //sin(_u[0] * 0.1) * 0.5 + 0.5;
+	crazy = 0.0; //sin(_u[0] * 0.2) * 0.5 + 0.5;
 	
 	vec2 uv = vec2(gl_FragCoord.xy - resolution.xy * 0.5) / resolution.y;
 	uv = rotate(uv, sin(_u[0] * 0.2) * 0.1 + crazy * _u[0] * 0.2);
@@ -219,10 +220,18 @@ void main(void)
 	vec3 n = normal(pos);
 	float occ = ao(pos, n, 0.04);
 	//vec3 color = (ao(pos, n, 0.04) * 0.5 + 0.5);// * (normal(pos) * 0.5 + 0.5);
-	vec3 sphereLight = vec3(1.0, 0.1, 0.0) * light(pos, n, spheres(pos), 0.2, 2.0);
-	vec3 cubeLight = vec3(0.0, 0.7, 1.0) * light(pos, n, cubes2(pos), 0.1, 4.0) * exp(-fract(_u[0] * 0.5) * 4.0);
+	vec3 sphereLight = mix(vec3(1.0), vec3(1.0, 0.1, 0.0), saturation) * light(pos, n, spheres(pos), 0.2, 2.0);
+	vec3 cubeLight = mix(vec3(1.0), vec3(0.0, 0.7, 1.0), saturation) * light(pos, n, cubes2(pos), 0.1, 4.0) * exp(-fract(_u[0] * 0.5) * 4.0);
 	vec3 holeLight = vec3(1.0, 0.02, 0.0) * light(pos, n, pos.y + 2.0 + holeAmount * 2.0, 0.3, 10.0) * holeAmount;
 	vec3 radiance = sphereLight + cubeLight + holeLight + occ * 0.01;
 	vec3 color = tonemap(radiance);
+	
+	// white flashes
+	float flash = exp(-mod(_u[0] - 4.0, 32.0) * 0.5);
+	color = mix(color, vec3(1.0), flash);
+	
+	// fade to black
+	color = mix(color, vec3(0.0), _u[1]);
+	
 	gl_FragColor = vec4(color, 1.0);
 }
