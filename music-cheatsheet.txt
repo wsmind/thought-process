@@ -9,7 +9,9 @@
 
 /* 5 */ sine,
 
-/* 6 */ reese
+/* 6 */ reese,
+
+/* 7 */ noise
 
 Bass scale
 13 - 16 - 18 - 20 - 23 - (25)

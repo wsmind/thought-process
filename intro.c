@@ -136,6 +136,12 @@ float fakeexp(float value)
 	return result > 0.0f ? result : 0.0f;
 }
 
+float rand(float f)
+{
+	f = sin(f * 12.9898) * 43758.5453;
+	return f - (float)(int)f;
+}
+
 typedef short (*Instrument)(unsigned int frame, unsigned int frequency);
 
 short silence(unsigned int frame, unsigned int period)
@@ -211,6 +217,16 @@ short reese(unsigned int frame, unsigned int period)
     return (short)(0.25f * out * 32767.0f) / REESE_VOLUME_DIVIDER;
 }
 
+#define NOISE_VOLUME_DIVIDER 32
+short noise(unsigned int frame, unsigned int period)
+{
+	float phase = TAU * (float)frame / (float)period;
+	float adsr = fakeexp(-phase * 0.01f);
+	float out = adsr * rand(phase) * 2.0 - 1.0;
+	
+    return (short)(out * 32767.0f) / NOISE_VOLUME_DIVIDER;
+}
+
 Instrument instruments[] = {
     /* 0 */ silence,
     /* 1 */ saw,
@@ -218,7 +234,8 @@ Instrument instruments[] = {
 	/* 3 */ square,
 	/* 4 */ kick,
 	/* 5 */ sine,
-	/* 6 */ reese
+	/* 6 */ reese,
+	/* 7 */ noise
 };
 
 #define CHANNELS 8
@@ -639,6 +656,46 @@ unsigned short patterns[][TRACKER_PATTERN_LENGTH * 2] = {
         NOTE(47), 0xe5,
         0, 0,
     },
+	
+	// 20 - noise FX
+	{
+        NOTE(30), 0xe7,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+    },
+	
+	// 21 - high pitch FX
+	{
+        NOTE(61), 0xe5,
+        0, 0,
+        NOTE(61), 0xe5,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+        0, 0,
+    },
 };
 
 unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
@@ -656,7 +713,7 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 5, 7, 8, 0, 0, 0, 0 },
 	
 	// 36 - blue! (32)
-    { 4, 6, 7, 8, 2, 0, 0, 0 },
+    { 4, 6, 7, 8, 2, 0, 0, 20 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 6, 7, 8, 2, 0, 0, 0 },
     { 4, 9, 7, 8, 2, 0, 0, 0 },
@@ -666,7 +723,7 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 5, 7, 8, 2, 0, 0, 0 },
 	
 	// 68 - balls (32)
-    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 21 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 9, 7, 8, 2, 10, 0, 0 },
@@ -676,17 +733,17 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 4, 5, 7, 8, 2, 10, 0, 0 },
 	
 	// 100 - more balls! (32)
-    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 21 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 9, 7, 8, 2, 10, 0, 0 },
-    { 4, 6, 7, 8, 2, 10, 0, 0 },
+    { 4, 6, 7, 8, 2, 10, 0, 21 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 6, 7, 8, 2, 10, 0, 0 },
     { 4, 11, 7, 8, 2, 10, 0, 0 },
 	
 	// 132 - fire from hell (32)
-    { 17, 12, 15, 18, 13, 0, 0, 0 },
+    { 17, 12, 15, 18, 13, 0, 0, 20 },
     { 17, 12, 16, 18, 14, 0, 0, 0 },
     { 17, 12, 15, 18, 13, 0, 0, 0 },
     { 17, 12, 16, 18, 14, 19, 0, 0 },
@@ -696,7 +753,7 @@ unsigned char song[TRACKER_SONG_LENGTH][CHANNELS] = {
     { 17, 12, 16, 18, 14, 19, 0, 0 },
 	
 	// 164 - more fire (32)
-    { 17, 12, 15, 18, 13, 0, 0, 0 },
+    { 17, 12, 15, 18, 13, 0, 0, 20 },
     { 17, 12, 16, 18, 14, 0, 0, 0 },
     { 17, 12, 15, 18, 13, 0, 0, 0 },
     { 17, 12, 16, 18, 14, 19, 0, 0 },
