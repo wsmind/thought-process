@@ -115,7 +115,7 @@ float holes(vec3 p)
 
 float holes2(vec3 p)
 {
-	p.z = repeat2(p.z, 4.0);
+	p.z = repeat(p.z, 4.0);
 	return box(p, vec3(1.0, holeAmount * 2.0 + 2.0, 1.0));
 }
 
@@ -204,7 +204,7 @@ float light(vec3 p, vec3 n, float d, float range, float energy)
 
 void main(void)
 {
-	saturation = step(36.0, _u[0]) * step(0.0, 260.0 - _u[0]) + step(292, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
+	saturation = step(36.0, _u[0]) * step(0.0, 260.0 - _u[0]) + step(292.0, _u[0]); //sin(_u[0] * 0.5) * 0.5 + 0.5;
 	holeAmount = smoothstep(132.0, 164.0, _u[0]) * step(0.0, 260.0 - _u[0]); //sin(_u[0] * 0.1) * 0.5 + 0.5;
 	crazy = smoothstep(194.0, 196.0, _u[0]); //sin(_u[0] * 0.2) * 0.5 + 0.5;
 	laser = fract(_u[3] * 0.5); /*sin(_u[0] * 0.8) * 0.5 + 0.5;*/
@@ -233,7 +233,7 @@ void main(void)
 	vec3 sphereLight = mix(vec3(1.0), vec3(1.0, 0.1, 0.0), saturation) * light(pos, n, spheres(pos), 0.2, 2.0);
 	vec3 cubeLight = mix(vec3(1.0), vec3(0.0, 0.7, 1.0), saturation) * light(pos, n, cubes2(pos), 0.1, 4.0) * exp(-fract(_u[0] * 0.5) * 4.0);
 	vec3 holeLight = vec3(1.0, 0.02, 0.0) * light(pos, n, pos.y + mix(2.0, sin(_u[0] * 0.2) * 20.0, crazy) + holeAmount * 2.0, 0.3, 10.0) * holeAmount;
-	vec3 tubeLight = vec3(10.0, 0.0, 0.02) * light(pos, n, tubes(p), 0.2 + laser * 0.2, laser);
+	vec3 tubeLight = vec3(10.0, 0.0, 0.02) * light(pos, n, tubes(pos), 0.2 + laser * 0.2, laser);
 	vec3 radiance = sphereLight + cubeLight + holeLight + tubeLight + occ * 0.01;
 	vec3 color = tonemap(radiance);
 	
