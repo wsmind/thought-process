@@ -81,6 +81,8 @@ static PIXELFORMATDESCRIPTOR pfd = {
 #define TRACKER_SONG_LENGTH 85 // in patterns
 #define AUDIO_SAMPLES (TRACKER_PERIOD * TRACKER_PATTERN_LENGTH * TRACKER_SONG_LENGTH * 2)
 
+//#define AUDIO_DEBUG
+
 static const unsigned int riffHeader[11] = {
     0x46464952, /* RIFF */
     AUDIO_SAMPLES * 2 + 36,
@@ -167,7 +169,6 @@ short square(unsigned int frame, unsigned int period)
     return ((frame / (period >> 1)) & 1 * 2 - 1) * 32767 / SQUARE_VOLUME_DIVIDER;
 }
 
-#define KICK_VOLUME_DIVIDER 1
 short kick(unsigned int frame, unsigned int period)
 {
 	/*float e = fakeexp(-2.0f);
@@ -183,7 +184,7 @@ short kick(unsigned int frame, unsigned int period)
 	float phase = TAU * t / (float)period;
 	float out = fakeexp(-t * 0.001f) * sin(phase * fakeexp(-t * 0.0002f));
 	
-    return (short)(out * 32767.0f) / KICK_VOLUME_DIVIDER;
+    return (short)(out * 30000.0f);
 }
 
 /*#define KICK_VOLUME_DIVIDER 4
@@ -955,7 +956,7 @@ static __forceinline void renderAudio()
                 
                 for (l = 0; l < TRACKER_PERIOD; l++)
                 {
-                    short s = instruments[channels[j].instrument & 0x0f](channels[j].frame, channels[j].period);
+                    short s = (short)((int)instruments[channels[j].instrument & 0x0f](channels[j].frame, channels[j].period) * 3 / 4);
                     short l = (channels[j].instrument & 0x80) ? s : 0;
                     short r = (channels[j].instrument & 0x40) ? s : 0;
                     
@@ -1002,9 +1003,10 @@ void entry()
 	DWORD height;
     float u[UNIFORM_COUNT];
     
-    // debug
-    /*HFILE audioFile;
-    WORD bytesWritten;*/
+#ifdef AUDIO_DEBUG
+    HFILE audioFile;
+    WORD bytesWritten;
+#endif
     
 	width = GetSystemMetrics(SM_CXSCREEN);
 	height = GetSystemMetrics(SM_CYSCREEN);
@@ -1028,10 +1030,12 @@ void entry()
     renderAudio();
     memcpy(audioBuffer, &riffHeader, sizeof(riffHeader));
     
+#ifdef AUDIO_DEBUG
     // debug audio output
-    /*audioFile = CreateFile("audio.wav", GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    audioFile = CreateFile("audio.wav", GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     WriteFile(audioFile, audioBuffer, sizeof(audioBuffer), &bytesWritten, NULL);
-    CloseHandle(audioFile);*/
+    CloseHandle(audioFile);
+#endif
     
     sndPlaySound((LPCSTR)audioBuffer, SND_ASYNC | SND_MEMORY);
     
