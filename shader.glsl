@@ -1,7 +1,7 @@
 //! FRAGMENT
 
 uniform float _u[UNIFORM_COUNT];
-vec2 resolution = vec2(WIDTH, HEIGHT);
+vec2 resolution = vec2(_u[4], _u[5]);
 
 float saturation;
 float holeAmount;

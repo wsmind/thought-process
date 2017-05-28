@@ -72,9 +72,7 @@ static PIXELFORMATDESCRIPTOR pfd = {
     0
 };
 
-#define WIDTH 1920
-#define HEIGHT 1080
-#define UNIFORM_COUNT 4
+#define UNIFORM_COUNT 6
 
 #include "shader.h"
 
@@ -1000,13 +998,18 @@ void entry()
     GLint program;
     GLint fragmentShader;
     DWORD startTime;
+	DWORD width;
+	DWORD height;
     float u[UNIFORM_COUNT];
     
     // debug
     /*HFILE audioFile;
     WORD bytesWritten;*/
     
-    hwnd = CreateWindow("static", NULL, WS_POPUP | WS_VISIBLE, 0, 0, WIDTH, HEIGHT, NULL, NULL, NULL, 0);
+	width = GetSystemMetrics(SM_CXSCREEN);
+	height = GetSystemMetrics(SM_CYSCREEN);
+	
+    hwnd = CreateWindow("static", NULL, WS_POPUP | WS_VISIBLE, 0, 0, width, height, NULL, NULL, NULL, 0);
     hdc = GetDC(hwnd);
     SetPixelFormat(hdc, ChoosePixelFormat(hdc, &pfd), &pfd);
     wglMakeCurrent(hdc, wglCreateContext(hdc));
@@ -1055,6 +1058,9 @@ void entry()
 			u[3] = 4.0 - (time - 164.0f);
 		else if (time >= 180.0f && time < 184.0f)
 			u[3] = 4.0 - (time - 180.0f);
+
+        u[4] = (float)width;
+        u[5] = (float)height;
         
         // hack - assume that the uniforms u[] will always be linked to locations [0-n]
         // given that they are the only uniforms in the shader, it is likely to work on all drivers
