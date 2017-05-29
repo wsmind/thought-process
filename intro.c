@@ -1044,11 +1044,13 @@ void entry()
     startTime = timeGetTime();
     while (!GetAsyncKeyState(VK_ESCAPE))
     {
+        float time;
+        
 		// avoid 'not responding' system messages
 		MSG msg;
 		PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 		
-        float time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
+        time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
         
 		//time += 164.0f;
 		
