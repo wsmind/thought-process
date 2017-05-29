@@ -72,6 +72,8 @@ static PIXELFORMATDESCRIPTOR pfd = {
     0
 };
 
+//#define CAPTURE_FRAMES
+
 #define UNIFORM_COUNT 6
 
 #include "shader.h"
@@ -991,6 +993,22 @@ static __forceinline void renderAudio()
     }
 }
 
+#ifdef CAPTURE_FRAMES
+char *frameFilename(int n)
+{
+    static char *name = "frame00000.raw";
+    char *ptr = name + 9;
+    
+    while (n > 0)
+    {
+        *ptr-- = (n - (n / 10) * 10) + '0';
+        n /= 10;
+    }
+    
+    return name;
+}
+#endif
+
 void entry()
 {
     HWND hwnd;
@@ -1004,13 +1022,25 @@ void entry()
     float u[UNIFORM_COUNT];
     
 #ifdef AUDIO_DEBUG
-    HFILE audioFile;
-    WORD bytesWritten;
+    HANDLE audioFile;
+    DWORD bytesWritten;
 #endif
     
+#ifdef CAPTURE_FRAMES
+    int frameNumber;
+    HANDLE frameFile;
+    DWORD frameBytesWritten;
+    char *frameBuffer;
+#endif
+
 	width = GetSystemMetrics(SM_CXSCREEN);
 	height = GetSystemMetrics(SM_CYSCREEN);
 	
+#ifdef CAPTURE_FRAMES
+    frameNumber = 0;
+    frameBuffer = HeapAlloc(GetProcessHeap(), 0, width * height * 3 /* RGB8 */);
+#endif
+
     hwnd = CreateWindow("static", NULL, WS_POPUP | WS_VISIBLE, 0, 0, width, height, NULL, NULL, NULL, 0);
     hdc = GetDC(hwnd);
     SetPixelFormat(hdc, ChoosePixelFormat(hdc, &pfd), &pfd);
@@ -1050,7 +1080,16 @@ void entry()
 		MSG msg;
 		PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 		
+#ifdef CAPTURE_FRAMES
+        // capture at a steady 60fps
+        time = (float)frameNumber * 1.0f / 60.0f * 140.0f / 60.0f;
+        
+        // stop at the end of the music
+        if (time > (AUDIO_SAMPLES / 44100.0f))
+            break;
+#else
         time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
+#endif
         
 		//time += 164.0f;
 		
@@ -1074,6 +1113,19 @@ void entry()
             glUniform1f(i, u[i]);
         
         glRects(-1, -1, 1, 1);
+        
+#ifdef CAPTURE_FRAMES
+        // read back pixels
+        glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, frameBuffer);
+        
+        // write ouput frame
+        frameFile = CreateFile(frameFilename(frameNumber), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        WriteFile(frameFile, frameBuffer, width * height * 3, &frameBytesWritten, NULL);
+        CloseHandle(frameFile);
+        
+        frameNumber++;
+#endif
+        
         wglSwapLayerBuffers(hdc, WGL_SWAP_MAIN_PLANE);
     }
     
