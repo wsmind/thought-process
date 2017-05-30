@@ -1,0 +1,1 @@
+ffmpeg -f image2 -r 60 -s 1920x1080 -pix_fmt rgb24 -vcodec rawvideo -i frame%%05d.raw -i audio.wav -vf vflip -codec:v libx264 -crf 18 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -movflags faststart thought-process.mp4
