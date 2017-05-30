@@ -1082,10 +1082,10 @@ void entry()
 		
 #ifdef CAPTURE_FRAMES
         // capture at a steady 60fps
-        time = (float)frameNumber * 1.0f / 60.0f * 140.0f / 60.0f;
+        time = (float)frameNumber / 60.0f * 140.0f / 60.0f;
         
         // stop at the end of the music
-        if (time > (AUDIO_SAMPLES / 44100.0f))
+        if (((float)frameNumber / 60.0f) > (AUDIO_SAMPLES / 2 / 44100.0f))
             break;
 #else
         time = (float)(timeGetTime() - startTime) * 0.001f * 140.0f / 60.0f;
@@ -1118,10 +1118,13 @@ void entry()
         // read back pixels
         glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, frameBuffer);
         
-        // write ouput frame
-        frameFile = CreateFile(frameFilename(frameNumber), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-        WriteFile(frameFile, frameBuffer, width * height * 3, &frameBytesWritten, NULL);
-        CloseHandle(frameFile);
+        // write ouput frame (skip existing ones)
+        frameFile = CreateFile(frameFilename(frameNumber), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (frameFile)
+		{
+			WriteFile(frameFile, frameBuffer, width * height * 3, &frameBytesWritten, NULL);
+			CloseHandle(frameFile);
+		}
         
         frameNumber++;
 #endif
